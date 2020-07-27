@@ -142,7 +142,8 @@ class MelosPackage {
     return startProcess(execArgs,
         environment: environment,
         workingDirectory: path,
-        prefix: packagePrefix);
+        prefix: packagePrefix,
+        runInShellValue: Platform.isWindows ? true : false);
   }
 
   // TODO(salakar): Conditionally write these files only if they exist in root.

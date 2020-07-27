@@ -209,7 +209,9 @@ class MelosWorkspace {
     return utils.startProcess(execArgs,
         environment: environment,
         workingDirectory: path,
-        onlyOutputOnError: onlyOutputOnError);
+        onlyOutputOnError: onlyOutputOnError,
+        runInShellValue: Platform.isWindows ? true : false
+    );
   }
 
   Future<void> linkPackages() async {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:path/path.dart' show relative;
+import 'package:path/path.dart' show relative, join;
 import 'package:yaml/yaml.dart';
 
 import 'logger.dart';
@@ -51,8 +51,15 @@ String pubspecPathForDirectory(Directory pluginDirectory) {
   return pluginDirectory.path + Platform.pathSeparator + 'pubspec.yaml';
 }
 
+//String relativePath(String path, String from) {
+//  if(Platform.isWindows) return relative(path, from: from).replaceAll('\\', '/');
+//  return relative(path, from: from);
+//}
+
 String relativePath(String path, String from) {
-  return relative(path, from: from);
+  String relativePath = relative(path, from: from);
+  if(Platform.isWindows) return join(Directory.current.path, relativePath).replaceAll('\\','\\\\');
+  return relativePath;
 }
 
 /// Simple check to see if the [Directory] qualifies as a plugin repository.
@@ -66,10 +73,12 @@ bool isPackageDirectory(Directory directory) {
   return FileSystemEntity.isFileSync(pluginYamlPath);
 }
 
+
 Future<int> startProcess(List<String> execArgs,
     {String prefix,
     Map<String, String> environment,
     String workingDirectory,
+      bool runInShellValue = false,
     bool onlyOutputOnError = false}) async {
   final environmentVariables = environment ?? {};
   final workingDirectoryPath = workingDirectory ?? Directory.current.path;
@@ -80,7 +89,8 @@ Future<int> startProcess(List<String> execArgs,
   final execProcess = await Process.start(executable, [],
       workingDirectory: workingDirectoryPath,
       includeParentEnvironment: true,
-      environment: environmentVariables);
+      environment: environmentVariables,
+      runInShell: runInShellValue);
 
   final execString = execArgs.map((arg) {
     var _arg = arg;

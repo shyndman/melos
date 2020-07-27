@@ -76,7 +76,7 @@ class RunCommand extends Command {
     };
 
     int exitCode = await startProcess(scriptParts,
-        environment: environment, workingDirectory: currentWorkspace.path);
+        environment: environment, workingDirectory: currentWorkspace.path, runInShellValue: Platform.isWindows ? true : false);
 
     logger.stdout('');
     logger.stdout(
